@@ -1,7 +1,17 @@
 package de.sirmythos.contact_manager.googlecontacts;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+
+import com.google.gdata.client.*;
+import com.google.gdata.client.contacts.*;
+import com.google.gdata.data.*;
+import com.google.gdata.data.contacts.*;
+import com.google.gdata.data.contacts.ContactEntry;
+import com.google.gdata.data.contacts.ContactFeed;
+import com.google.gdata.data.extensions.*;
+import com.google.gdata.util.*;
 
 public class Loader {
 
@@ -128,15 +138,27 @@ public class Loader {
 		ContactFeed resultFeed = myService.query(myQuery, ContactFeed.class);
 		// Print the results
 		for (ContactEntry entry : resultFeed.getEntries()) {
-			System.out.println(entry.getName().getFullname().getValue());
+			System.out.println(entry.getName().getFullName().getValue());
 			System.out.println("Updated on: " + entry.getUpdated().toStringRfc822());
 		}
 	}
 
 	// Qurey für einen einzelnen Kontakt
 	public static ContactEntry retrieveContact(ContactsService myService) {
-		ContactEntry contact = myService.getEntry(
-				new URL("https://www.google.com/m8/feeds/contacts/default/full/contactId"), ContactEntry.class);
+		ContactEntry contact = null;
+		try {
+			contact = myService.getEntry(new URL("https://www.google.com/m8/feeds/contacts/default/full/contactId"),
+					ContactEntry.class);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// Do something with the contact.
 		return contact;
 	}
